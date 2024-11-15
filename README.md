@@ -19,5 +19,7 @@ You can customise this script to suit your needs, allowing for many different lo
 > [ox_target](https://github.com/overextended/ox_target)
 
 ## Asgaard Developments
-Join the Discord: [Discord](https://discord.gg/eFsB5ZFxeq)
+Join the Discord: [Click Here](https://discord.gg/eFsB5ZFxeq)
 
+![Release](https://img.shields.io/github/downloads/s4t4n667/s4t4n667_elevators/total?color=4f7492
+)
