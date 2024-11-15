@@ -1,5 +1,5 @@
 # s4t4n667_elevators
-## Simple Elevator System Using ox_lib :bellhop:
+## Simple Elevator System Using ox_lib 🛎️🧳
 
 You can customise this script to suit your needs, allowing for many different locations and elevator floors. Elevators can also be locked to job roles.
 
@@ -7,7 +7,7 @@ You can customise this script to suit your needs, allowing for many different lo
 - Supports ox_target and interact.
 - Locales: English, French & German.
 
-**Preview video:** [Click Here]()
+**Preview video:** [Click Here](https://youtu.be/96q8vfx50SA)
 <br>
 
 > Dependencies:
