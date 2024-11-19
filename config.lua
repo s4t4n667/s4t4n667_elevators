@@ -11,7 +11,7 @@ return {
 
 	journeytime = 2000, -- 1000 is 1 second
 	animation = 'e atm', -- animation after selecting floor
-.
+
 	elevators = {
 		['Mission Row Police Station'] = {
 			{
