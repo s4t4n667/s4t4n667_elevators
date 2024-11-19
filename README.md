@@ -20,6 +20,3 @@ You can customise this script to suit your needs, allowing for many different lo
 
 ## Asgaard Developments
 Join the Discord: [Discord](https://discord.gg/eFsB5ZFxeq)
-
-![Release](https://img.shields.io/github/downloads/s4t4n667/s4t4n667_elevators/total?color=4f7492
-)
