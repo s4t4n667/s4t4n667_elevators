@@ -1,6 +1,6 @@
-local QBCore = exports["qb-core"]:GetCoreObject()
 local config = require('config')
 lib.locale()
+
 
 CreateThread(function()
 	for elevatorName, elevatorFloors in pairs(config.elevators) do
@@ -48,8 +48,16 @@ end)
 
 
 RegisterNetEvent("s4t4n667_elevators:showOptions", function(data)
-	local elevator = {}
-	local PlayerData = QBCore.Functions.GetPlayerData()
+    local elevator = {}
+    local PlayerData = nil
+
+    if config.useQBCore then
+        QBCore = exports["qb-core"]:GetCoreObject()
+        PlayerData = QBCore.Functions.GetPlayerData()
+	else
+        ESX = exports['es_extended']:getSharedObject()
+        PlayerData = ESX.GetPlayerData()
+    end
 
 	if config.elevators and config.elevators[data.elevator] then
 		for index, floor in pairs(config.elevators[data.elevator]) do
@@ -102,23 +110,47 @@ end)
 
 
 function isDisabled(index, floor, data)
-	local PlayerData = QBCore.Functions.GetPlayerData()
-    if index == data.floortitle then
-        return true
+    local PlayerData = nil
+
+    if config.useQBCore then
+        PlayerData = QBCore.Functions.GetPlayerData()
+
+        if index == data.floortitle then
+            return true
+        end
+        local hasJob = false
+        if floor.joblock ~= nil and next(floor.joblock) then
+            for jobName, gradeLevel in pairs(floor.joblock) do
+                if PlayerData.job.name == jobName and PlayerData.job.grade.level >= gradeLevel and PlayerData.job.onduty then
+                    hasJob = true
+                    break
+                end
+            end
+        end
+        if floor.joblock == nil then
+            return false
+        end
+        return not hasJob
+    else 
+        PlayerData = ESX.GetPlayerData()
+
+        if index == data.floortitle then
+            return true
+        end
+        local hasJob = false
+        if floor.joblock ~= nil and next(floor.joblock) then
+            for jobName, gradeLevel in pairs(floor.joblock) do
+                if PlayerData.job.name == jobName and PlayerData.job.grade >= gradeLevel then
+                    hasJob = true
+                    break
+                end
+            end
+        end
+        if floor.joblock == nil then
+            return false
+        end
+        return not hasJob
     end
-	local hasJob = false
-	if floor.joblock ~= nil and next(floor.joblock) then
-		for jobName, gradeLevel in pairs(floor.joblock) do
-			if PlayerData.job.name == jobName and PlayerData.job.grade.level >= gradeLevel and PlayerData.job.onduty then
-				hasJob = true
-				break
-			end
-		end
-	end
-    if floor.joblock == nil then 
-        return false 
-    end
-	return not hasJob
 end
 
 
@@ -126,7 +158,7 @@ function Draw3DText(x, y, z, text)
     SetDrawOrigin(x, y, z, 0)
     SetTextFont(4)
     SetTextProportional(1)
-    SetTextScale(0.35, 0.35)
+    SetTextScale(config.textSize, config.textSize)
     SetTextColour(255, 255, 255, 215)
     SetTextEntry("STRING")
     SetTextCentre(1)

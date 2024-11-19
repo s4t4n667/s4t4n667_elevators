@@ -1,13 +1,17 @@
 return {
 
+	useQBCore = true,
+
 	useTarget = false, -- true uses ox_target, false uses 3dtext
 	targeticon = 'fa-solid fa-arrow-up-right-from-square', -- FontAwesome https://fontawesome.com/search?o=r&m=free
+	
 	text = '~g~[E] ~w~Use Elevator', -- text for 3dtext
 	viewdistance = 5.0, -- for 3dtext
+	textSize = 0.35, -- 0.35 is standard
 
 	journeytime = 2000, -- 1000 is 1 second
 	animation = 'e atm', -- animation after selecting floor
-
+.
 	elevators = {
 		['Mission Row Police Station'] = {
 			{
