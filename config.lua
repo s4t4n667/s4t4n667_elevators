@@ -12,6 +12,8 @@ return {
 	journeytime = 2000, -- 1000 is 1 second
 	animation = 'e atm', -- animation after selecting floor
 
+	interactSound = 'doorbell', -- interact-sound/client/html/sounds
+
 	elevators = {
 		['Mission Row Police Station'] = {
 			{

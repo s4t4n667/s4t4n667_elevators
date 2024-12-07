@@ -101,6 +101,7 @@ RegisterNetEvent("s4t4n667_elevator:UseElevator", function(arg)
 		canCancel = false,
 	})
     DoScreenFadeIn(1500)
+    TriggerServerEvent("InteractSound_SV:PlayWithinDistance", 10, config.interactSound, 0.2)
     lib.notify({
         title = locale('notify'),
         description = locale('notify_desc') .. floor.floortitle,
