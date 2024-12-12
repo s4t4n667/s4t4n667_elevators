@@ -166,7 +166,7 @@ function isDisabled(index, floor, data)
         if floor.joblock == nil then
             return false
         end
-        return not hasJob
+        return not (hasJob or hasItem)
     end
 end
 
