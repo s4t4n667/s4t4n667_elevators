@@ -21,14 +21,20 @@ return {
 				label = 'Access the ground floor.',				
 				coords = vector3(463.72, -985.37, 34.3), 
 				heading = 87.83,
-				joblock = { ["police"] = 0,},
+				joblock = { 
+					["police"] = 0,
+				},
+				itemlock = nil,
 			},
 			{
 				floortitle = 'Level 1', 
 				label = 'Access the Helicopter pad.',				
 				coords = vector3(468.49, -983.95, 43.69), 
 				heading = 91.48,
-				joblock = { ["police"] = 0,},
+				joblock = { 
+					["police"] = 0,
+				},
+				itemlock = nil,
 			},
 		},
 		['Pillbox Hospital'] = {
@@ -37,13 +43,22 @@ return {
 				label = 'Access the main Hospital floor',				
 				coords = vector3(-436.09, -359.8, 34.95), 
 				heading = 355.05,
+				joblock = nil,
+				itemlock = {
+					"water",
+				},
 			},
 			{
 				floortitle = 'Car Park', 
 				label = 'Access the Hospital car park.',				
 				coords = vector3(-418.9, -344.81, 24.23), 
 				heading = 106.67,
+				joblock = nil,
+				itemlock = {
+					"water",
+				},
 			},
+
 		},
 	},
 }

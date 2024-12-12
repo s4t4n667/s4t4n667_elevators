@@ -115,7 +115,6 @@ function isDisabled(index, floor, data)
 
     if config.useQBCore then
         PlayerData = QBCore.Functions.GetPlayerData()
-
         if index == data.floortitle then
             return true
         end
@@ -128,13 +127,21 @@ function isDisabled(index, floor, data)
                 end
             end
         end
-        if floor.joblock == nil then
+        local hasItem = false
+        if floor.itemlock ~= nil and next(floor.itemlock) then
+            for _, itemName in ipairs(floor.itemlock) do
+                if exports.ox_inventory:Search("count", itemName) > 0 then
+                    hasItem = true
+                    break
+                end
+            end
+        end
+        if floor.joblock == nil and floor.itemlock == nil then
             return false
         end
-        return not hasJob
+        return not (hasJob or hasItem)
     else 
         PlayerData = ESX.GetPlayerData()
-
         if index == data.floortitle then
             return true
         end
@@ -143,6 +150,15 @@ function isDisabled(index, floor, data)
             for jobName, gradeLevel in pairs(floor.joblock) do
                 if PlayerData.job.name == jobName and PlayerData.job.grade >= gradeLevel then
                     hasJob = true
+                    break
+                end
+            end
+        end
+        local hasItem = false
+        if floor.itemlock ~= nil and next(floor.itemlock) then
+            for _, itemName in ipairs(floor.itemlock) do
+                if exports.ox_inventory:Search("count", itemName) > 0 then
+                    hasItem = true
                     break
                 end
             end
