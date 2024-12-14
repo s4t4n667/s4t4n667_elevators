@@ -10,6 +10,8 @@ You can customise this script to suit your needs, allowing for many different lo
 
 **Preview video:** [Click Here](https://youtu.be/96q8vfx50SA?si=Mc0Ix0J2iIUAZBqE)
 <br>
+**Documentation:** [Click Here](https://s4t4n667.gitbook.io/asgaard-developments/free-scripts/s4t4n667_elevators)
+<br>
 
 > Dependencies:
 > <br>
