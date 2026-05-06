@@ -1,8 +1,9 @@
 {
-    "UseElevator": "Aufzug benutzen",
-    
+    "targetElevator": "Aufzug benutzen",
+    "textElevator": "~g~[E] ~w~Aufzug benutzen",
+
     "Travelling": "Unterwegs...",
 
     "notify": "Aufzug",
-    "notify_desc": "Sie befinden sich jetzt auf "
+    "notify_desc": "Du befindest dich jetzt auf "
 }

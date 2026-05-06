@@ -1,9 +1,9 @@
 {
-    "UseElevator" : "Use Elevator",
+    "targetElevator" : "Use Elevator",
+    "textElevator" : "~g~[E] ~w~Use Elevator",
 
     "Travelling" : "Travelling...",
 
     "notify" : "Elevator",
     "notify_desc" : "You are now on "
 }
-

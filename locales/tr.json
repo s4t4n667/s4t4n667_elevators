@@ -1,8 +1,9 @@
 {
-    "UseElevator": "Asansörü Kullan",
+    "targetElevator": "Asansörü Kullan",
+    "textElevator": "~g~[E] ~w~Asansörü Kullan",
 
-    "Travelling": "Seyahat Ediliyor...",
+    "Travelling": "Seyahat ediliyor...",
 
     "notify": "Asansör",
-    "notify_desc": "Şu anda şuradasınız: "
+    "notify_desc": "Şu anda "
 }

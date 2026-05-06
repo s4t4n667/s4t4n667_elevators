@@ -1,23 +1,30 @@
 return {
 
-	useQBCore = true,
+	settings = {
+		useQBCore = true,
 
-	useTarget = false, -- true uses ox_target, false uses 3dtext
-	targeticon = 'fa-solid fa-arrow-up-right-from-square', -- FontAwesome https://fontawesome.com/search?o=r&m=free
-	
-	text = '~g~[E] ~w~Use Elevator', -- text for 3dtext
-	viewdistance = 5.0, -- for 3dtext
-	textSize = 0.35, -- 0.35 is standard
+		target = true, -- true uses ox_target, falses uses 3dtext
+		targetDistance = 2.0, 
+		targetIcon = 'fa-solid fa-bell',
+		targetIconColor = '',
 
-	journeytime = 2000, -- 1000 is 1 second
-	animation = 'e atm', -- animation after selecting floor
+		textDistance = 5.0,
+		textSize = 0.35,
 
-	interactSound = 'doorbell', -- interact-sound/client/html/sounds
+		animation = 'e atm', -- animation after selecting floor
+		travelTime = 2000, -- 1000 is 1 second
+	},
+
+	elevatorSound = {
+		sound = 'doorbell', -- interact-sound/client/html/sounds
+		distance = 5,
+		volume = 0.2,
+	},
 
 	elevators = {
 		['Mission Row Police Station'] = {
 			{
-				floortitle = 'Ground Floor', 
+				floorTitle = 'Ground Floor', 
 				label = 'Access the ground floor.',				
 				coords = vector3(463.72, -985.37, 34.3), 
 				heading = 87.83,
@@ -27,7 +34,7 @@ return {
 				itemlock = nil,
 			},
 			{
-				floortitle = 'Level 1', 
+				floorTitle = 'Level 1', 
 				label = 'Access the Helicopter pad.',				
 				coords = vector3(468.49, -983.95, 43.69), 
 				heading = 91.48,
@@ -37,28 +44,29 @@ return {
 				itemlock = nil,
 			},
 		},
-		['Pillbox Hospital'] = {
+		['Mount Zonah Hospital'] = {
 			{
-				floortitle = 'Main Floor', 
-				label = 'Access the main Hospital floor',				
-				coords = vector3(-436.09, -359.8, 34.95), 
-				heading = 355.05,
+				floorTitle = 'Main Floor', 
+				label = 'Access the main Hospital floor',
+				icon = 'fa-hospital',
+				iconColor = '',
+				coords = vec4(-436.0963, -359.8023, 34.9475, 356.0672),
 				joblock = nil,
 				itemlock = {
 					"water",
 				},
 			},
 			{
-				floortitle = 'Car Park', 
-				label = 'Access the Hospital car park.',				
-				coords = vector3(-418.9, -344.81, 24.23), 
-				heading = 106.67,
+				floorTitle = 'Car Park', 
+				label = 'Access the Hospital car park.',
+				icon = 'fa-solid fa-car',
+				iconColor = '',
+				coords = vec4(-418.9, -344.81, 24.23, 106.67), 
 				joblock = nil,
 				itemlock = {
 					"water",
 				},
 			},
-
 		},
 	},
 }
