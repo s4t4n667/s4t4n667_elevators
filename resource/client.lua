@@ -1,6 +1,12 @@
 lib.locale()
 local config = require('config')
 
+if config.settings.useQBCore then
+    QBCore = exports["qb-core"]:GetCoreObject()
+else
+    ESX = exports["es_extended"]:getSharedObject()
+end
+
 CreateThread(function()
     for elevatorName, elevatorFloors in pairs(config.elevators) do
         for index, floor in pairs(elevatorFloors) do
@@ -105,64 +111,63 @@ RegisterNetEvent("s4t4n667_elevator:UseElevator", function(arg)
     lib.notify({title = locale('notify'), description = locale('notify_desc') .. floor.floorTitle, type = "success"})
 end)
 
-function isDisabled(index, floor, data)
+local function getPlayerData()
     if config.settings.useQBCore then
-        QBCore = exports["qb-core"]:GetCoreObject()
-        PlayerData = QBCore.Functions.GetPlayerData()
-        if index == data.floortitle then
-            return true
-        end
-        local hasJob = false
-        if floor.joblock ~= nil and next(floor.joblock) then
-            for jobName, gradeLevel in pairs(floor.joblock) do
-                if PlayerData.job.name == jobName and PlayerData.job.grade.level >= gradeLevel and PlayerData.job.onduty then
-                    hasJob = true
-                    break
-                end
-            end
-        end
-        local hasItem = false
-        if floor.itemlock ~= nil and next(floor.itemlock) then
-            for _, itemName in ipairs(floor.itemlock) do
-                if exports.ox_inventory:Search("count", itemName) > 0 then
-                    hasItem = true
-                    break
-                end
-            end
-        end
-        if floor.joblock == nil and floor.itemlock == nil then
-            return false
-        end
-        return not (hasJob or hasItem)
-    else 
-        ESX = exports['es_extended']:getSharedObject()
-        PlayerData = ESX.GetPlayerData()
-        if index == data.floortitle then
-            return true
-        end
-        local hasJob = false
-        if floor.joblock ~= nil and next(floor.joblock) then
-            for jobName, gradeLevel in pairs(floor.joblock) do
-                if PlayerData.job.name == jobName and PlayerData.job.grade >= gradeLevel then
-                    hasJob = true
-                    break
-                end
-            end
-        end
-        local hasItem = false
-        if floor.itemlock ~= nil and next(floor.itemlock) then
-            for _, itemName in ipairs(floor.itemlock) do
-                if exports.ox_inventory:Search("count", itemName) > 0 then
-                    hasItem = true
-                    break
-                end
-            end
-        end
-        if floor.joblock == nil then
-            return false
-        end
-        return not hasJob
+        return QBCore.Functions.GetPlayerData(), true
     end
+
+    return ESX.GetPlayerData(), false
+end
+
+local function hasRequiredJob(playerData, joblock, isQB)
+    if not joblock or not next(joblock) then
+        return true
+    end
+
+    for jobName, gradeLevel in pairs(joblock) do
+        local job = playerData.job
+
+        if job.name == jobName then
+            if isQB then
+                if job.grade.level >= gradeLevel and job.onduty then
+                    return true
+                end
+            else
+                if job.grade >= gradeLevel then
+                    return true
+                end
+            end
+        end
+    end
+
+    return false
+end
+
+local function hasRequiredItem(itemlock)
+    if not itemlock or not next(itemlock) then
+        return true
+    end
+
+    for _, itemName in ipairs(itemlock) do
+        if exports.ox_inventory:Search("count", itemName) > 0 then
+            return true
+        end
+    end
+
+    return false
+end
+
+function isDisabled(index, floor, data)
+    if index == data.floortitle then
+        return true
+    end
+
+    local playerData, isQB = getPlayerData()
+
+    local hasJob = hasRequiredJob(playerData, floor.joblock, isQB)
+    local hasItem = hasRequiredItem(floor.itemlock)
+
+    return not (hasJob and hasItem)
 end
 
 function Draw3DText(x, y, z, text)
