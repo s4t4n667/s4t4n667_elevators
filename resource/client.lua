@@ -7,46 +7,78 @@ else
     ESX = exports["es_extended"]:getSharedObject()
 end
 
+local function handleTarget(id, floor, info)
+    if config.settings.targetType == 'ox_target' then
+        exports.ox_target:addBoxZone({
+            coords = floor.coords,
+            size = vec3(3.0, 3.0, 3.0),
+            rotation = floor.heading,
+            debug = drawZones,
+            options = {
+                {
+                    name = id,
+                    label = locale('targetElevator'),
+                    icon = config.settings.targetIcon,
+                    iconColor = config.settings.targetIconColor,
+                    distance = config.settings.targetDistance,
+                    onSelect = function()
+                        TriggerEvent('s4t4n667_elevators:showOptions', info)
+                    end
+                }
+            }
+        })
+    else
+        exports['qb-target']:AddBoxZone(
+            id,
+            floor.coords,
+            3.0,
+            3.0,
+            {
+                name = id,
+                heading = floor.heading,
+                debugPoly = drawZones,
+                minZ = floor.coords.z - 1.0,
+                maxZ = floor.coords.z + 1.0
+            },
+            {
+                options = {
+                    {
+                        event = 's4t4n667_elevators:showOptions',
+                        icon = config.settings.targetIcon,
+                        label = locale('targetElevator'),
+                        elevator = info.elevator,
+                        floortitle = info.floortitle
+                    }
+                },
+                distance = config.settings.targetDistance
+            }
+        )
+    end
+end
+
 CreateThread(function()
     for elevatorName, elevatorFloors in pairs(config.elevators) do
-        for index, floor in pairs(elevatorFloors) do
-            local id = ("%s_%s"):format(elevatorName, index)
-
-            local info = {elevator = elevatorName, floortitle = index }
+        for floorIndex, floor in pairs(elevatorFloors) do
+            local id = ('%s_%s'):format(elevatorName, floorIndex)
+            local info = {elevator = elevatorName, floortitle = floorIndex}
 
             if config.settings.target then
-                exports.ox_target:addBoxZone({
-                    coords = floor.coords,
-                    size = vec3(3, 3, 3),
-                    rotation = floor.heading,
-                    debug = drawZones,
-                    options = {
-                        {
-                            name = id,
-                            label = locale('targetElevator'),
-                            icon = config.settings.targetIcon,
-                            iconColor = config.settings.targetIconColor,
-                            distance = config.settings.targetDistance,
-                            onSelect = function()
-                                TriggerEvent("s4t4n667_elevators:showOptions", info)
-                            end
-                        }
-                    }
-                })
+                handleTarget(id, floor, info)
             else
                 CreateThread(function()
                     while true do
                         local sleep = 1000
                         local ped = PlayerPedId()
                         local playerCoords = GetEntityCoords(ped)
-                        local dist = #(playerCoords - vec3(floor.coords.x, floor.coords.y, floor.coords.z))
+                        local distance = #(playerCoords - floor.coords)
 
-                        if dist < config.settings.textDistance then
+                        if distance < config.settings.textDistance then
                             sleep = 0
+
                             Draw3DText(floor.coords.x, floor.coords.y, floor.coords.z + 1.0, locale('textElevator'))
 
                             if IsControlJustPressed(0, 38) then
-                                TriggerEvent("s4t4n667_elevators:showOptions", info)
+                                TriggerEvent('s4t4n667_elevators:showOptions', info)
                             end
                         end
 
@@ -61,7 +93,6 @@ end)
 RegisterNetEvent("s4t4n667_elevators:showOptions", function(data)
     local elevator = {}
     local PlayerData = nil
-
 
 	if config.elevators and config.elevators[data.elevator] then
 		for index, floor in pairs(config.elevators[data.elevator]) do
@@ -99,7 +130,7 @@ RegisterNetEvent("s4t4n667_elevator:UseElevator", function(arg)
     Wait(100)
 	
     lib.progressBar({
-		duration = config.travelTime,
+		duration = config.settings.travelTime,
 		label = locale('Travelling'),
 		useWhileDead = false,
 		canCancel = false,
@@ -115,7 +146,7 @@ local function getPlayerData()
     if config.settings.useQBCore then
         return QBCore.Functions.GetPlayerData(), true
     end
-
+    
     return ESX.GetPlayerData(), false
 end
 

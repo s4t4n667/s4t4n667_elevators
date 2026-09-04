@@ -4,8 +4,9 @@ Fully customisable elevator system using ox_lib menus - allowing for many differ
 ## 🔐 Dependencies
 - any framework
 - [ox_lib](https://github.com/overextended/ox_lib)
-- [ox_target](https://github.com/overextended/ox_target)
+- [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-fivem/qb-target)
 - [ox_inventory](https://github.com/overextended/ox_inventory)
+- [interact-sound](https://github.com/plunkettscott/interact-sound)
 
 ## ⚙️ How to install:
 1) Download the latest release

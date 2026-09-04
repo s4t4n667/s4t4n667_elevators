@@ -4,6 +4,7 @@ return {
 		useQBCore = true,
 
 		target = true, -- true uses ox_target, falses uses 3dtext
+		targetType = 'ox_target', -- ox_target or qb-target
 		targetDistance = 2.0, 
 		targetIcon = 'fa-solid fa-bell',
 		targetIconColor = '',
@@ -52,9 +53,7 @@ return {
 				iconColor = '',
 				coords = vec4(-436.0963, -359.8023, 34.9475, 356.0672),
 				joblock = nil,
-				itemlock = {
-					"water",
-				},
+				itemlock = nil,
 			},
 			{
 				floorTitle = 'Car Park', 
