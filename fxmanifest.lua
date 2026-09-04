@@ -5,7 +5,7 @@ lua54 'yes'
 
 author "Asgaard Developments | s4t4n667"
 description 'Easy to use elevator system using ox_lib'
-version '1.0.4'
+version '1.1.1'
 
 shared_script {
     '@ox_lib/init.lua',
