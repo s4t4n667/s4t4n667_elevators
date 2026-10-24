@@ -56,97 +56,11 @@ local function handleTarget(id, floor, info)
     end
 end
 
-CreateThread(function()
-    for elevatorName, elevatorFloors in pairs(config.elevators) do
-        for floorIndex, floor in pairs(elevatorFloors) do
-            local id = ('%s_%s'):format(elevatorName, floorIndex)
-            local info = {elevator = elevatorName, floortitle = floorIndex}
-
-            if config.settings.target then
-                handleTarget(id, floor, info)
-            else
-                CreateThread(function()
-                    while true do
-                        local sleep = 1000
-                        local ped = PlayerPedId()
-                        local playerCoords = GetEntityCoords(ped)
-                        local distance = #(playerCoords - floor.coords)
-
-                        if distance < config.settings.textDistance then
-                            sleep = 0
-
-                            Draw3DText(floor.coords.x, floor.coords.y, floor.coords.z + 1.0, locale('textElevator'))
-
-                            if IsControlJustPressed(0, 38) then
-                                TriggerEvent('s4t4n667_elevators:showOptions', info)
-                            end
-                        end
-
-                        Wait(sleep)
-                    end
-                end)
-            end
-        end
-    end
-end)
-
-RegisterNetEvent("s4t4n667_elevators:showOptions", function(data)
-    local elevator = {}
-    local PlayerData = nil
-
-	if config.elevators and config.elevators[data.elevator] then
-		for index, floor in pairs(config.elevators[data.elevator]) do
-			table.insert(elevator, {
-				title = floor.floorTitle,
-				description = floor.label,
-                icon = floor.icon,
-				disabled = isDisabled(index, floor, data),
-				onSelect = function()
-					TriggerEvent("s4t4n667_elevator:UseElevator", floor)
-				end
-			})
-		end
-		lib.registerContext({
-			id = 'mainMenu',
-			options = elevator,
-			title = data.elevator,
-			position = 'top-right',
-		}) 
-		lib.showContext('mainMenu')
-	end
-end)
-
-RegisterNetEvent("s4t4n667_elevator:UseElevator", function(arg)
-    local floor = arg
-    local ped = PlayerPedId()
-
-    ExecuteCommand(config.settings.animation)
-    Wait(2000)
-    ExecuteCommand('e c')
-    DoScreenFadeOut(100)
-    Wait(1000)
-    SetEntityCoords(ped, floor.coords.x, floor.coords.y, floor.coords.z -1)
-    SetEntityHeading(ped, floor.coords.w)
-    Wait(100)
-	
-    lib.progressBar({
-		duration = config.settings.travelTime,
-		label = locale('Travelling'),
-		useWhileDead = false,
-		canCancel = false,
-	})
-    
-    DoScreenFadeIn(1500)
-    TriggerServerEvent("InteractSound_SV:PlayWithinDistance", config.elevatorSound.distance, config.elevatorSound.sound, config.elevatorSound.volume)
-    
-    lib.notify({title = locale('notify'), description = locale('notify_desc') .. floor.floorTitle, type = "success"})
-end)
-
 local function getPlayerData()
     if config.settings.useQBCore then
         return QBCore.Functions.GetPlayerData(), true
     end
-    
+
     return ESX.GetPlayerData(), false
 end
 
@@ -188,7 +102,38 @@ local function hasRequiredItem(itemlock)
     return false
 end
 
-function isDisabled(index, floor, data)
+local function markersLoop()
+    local markers = {}
+    for elevatorName, elevatorFloors in pairs(config.elevators) do
+        for floorIndex, floor in pairs(elevatorFloors) do
+            local info = {elevator = elevatorName, floortitle = floorIndex}
+            if config.settings.target then
+                handleTarget(('%s_%s'):format(elevatorName, floorIndex), floor, info)
+            else
+                markers[#markers + 1] = {coords = floor.coords, info = info}
+            end
+        end
+    end
+
+    local markerDistMax = config.settings.markerDistance
+    while #markers > 0 do
+        local sleep = 1000
+        local playerCoords = GetEntityCoords(PlayerPedId())
+        for k, marker in pairs(markers) do
+            local dist = #(playerCoords - marker.coords.xyz)
+            if dist < markerDistMax then
+                sleep = 0
+                Draw3DText(marker.coords.x, marker.coords.y, marker.coords.z + 1.0, locale('textElevator'))
+                if IsControlJustPressed(0, 38) then
+                    TriggerEvent('s4t4n667_elevators:showOptions', marker.info)
+                end
+            end
+        end
+        Wait(sleep)
+    end
+end
+
+function IsDisabled(index, floor, data)
     if index == data.floortitle then
         return true
     end
@@ -213,3 +158,58 @@ function Draw3DText(x, y, z, text)
     DrawText(0.0, 0.0)
     ClearDrawOrigin()
 end
+
+AddEventHandler('OnResourceStart', function(resourceName)
+    if GetCurrentResourceName() ~= resourceName then return end
+    markersLoop()
+end)
+
+RegisterNetEvent("s4t4n667_elevators:showOptions", function(data)
+    local elevator = {}
+	if config.elevators and config.elevators[data.elevator] then
+		for index, floor in pairs(config.elevators[data.elevator]) do
+			table.insert(elevator, {
+				title = floor.floorTitle,
+				description = floor.label,
+                icon = floor.icon,
+				disabled = IsDisabled(index, floor, data),
+				onSelect = function()
+					TriggerEvent("s4t4n667_elevator:UseElevator", floor)
+				end
+			})
+		end
+		lib.registerContext({
+			id = 'mainMenu',
+			options = elevator,
+			title = data.elevator,
+			position = 'top-right',
+		})
+		lib.showContext('mainMenu')
+	end
+end)
+
+RegisterNetEvent("s4t4n667_elevator:UseElevator", function(arg)
+    local floor = arg
+    local ped = PlayerPedId()
+
+    ExecuteCommand(config.settings.animation)
+    Wait(2000)
+    ExecuteCommand('e c')
+    DoScreenFadeOut(100)
+    Wait(1000)
+    SetEntityCoords(ped, floor.coords.x, floor.coords.y, floor.coords.z -1)
+    SetEntityHeading(ped, floor.coords.w)
+    Wait(100)
+
+    lib.progressBar({
+		duration = config.settings.travelTime,
+		label = locale('Travelling'),
+		useWhileDead = false,
+		canCancel = false,
+	})
+
+    DoScreenFadeIn(1500)
+    TriggerServerEvent("InteractSound_SV:PlayWithinDistance", config.elevatorSound.distance, config.elevatorSound.sound, config.elevatorSound.volume)
+
+    lib.notify({title = locale('notify'), description = locale('notify_desc') .. floor.floorTitle, type = "success"})
+end)
