@@ -1,90 +1,81 @@
 lib.locale()
 local config = require('config')
+local menuOpen = false
 
-if config.settings.useQBCore then
+if config.useQBCore then
     QBCore = exports["qb-core"]:GetCoreObject()
 else
     ESX = exports["es_extended"]:getSharedObject()
 end
 
 local function handleTarget(id, floor, info)
-    if config.settings.targetType == 'ox_target' then
-        exports.ox_target:addBoxZone({
-            coords = floor.coords,
-            size = vec3(3.0, 3.0, 3.0),
-            rotation = floor.heading,
-            debug = drawZones,
-            options = {
-                {
-                    name = id,
-                    label = locale('targetElevator'),
-                    icon = config.settings.targetIcon,
-                    iconColor = config.settings.targetIconColor,
-                    distance = config.settings.targetDistance,
-                    onSelect = function()
-                        TriggerEvent('s4t4n667_elevators:showOptions', info)
-                    end
-                }
-            }
-        })
-    else
-        exports['qb-target']:AddBoxZone(
-            id,
-            floor.coords,
-            3.0,
-            3.0,
-            {
-                name = id,
-                heading = floor.heading,
-                debugPoly = drawZones,
-                minZ = floor.coords.z - 1.0,
-                maxZ = floor.coords.z + 1.0
-            },
-            {
-                options = {
-                    {
-                        event = 's4t4n667_elevators:showOptions',
-                        icon = config.settings.targetIcon,
-                        label = locale('targetElevator'),
-                        elevator = info.elevator,
-                        floortitle = info.floortitle
-                    }
-                },
-                distance = config.settings.targetDistance
-            }
-        )
+    local coords, heading = floor.coords.xyz, floor.coords.w
+    local label = locale('targetElevator')
+    local icon = config.target.icon
+    local distance = config.target.distance
+    local debug = config.target.debug
+
+    local function onSelect()
+        TriggerEvent('s4t4n667_elevators:showOptions', info)
     end
+
+    if config.interaction == 'ox_target' then
+        exports.ox_target:addBoxZone({
+            coords = coords,
+            size = vec3(3.0, 3.0, 3.0),
+            rotation = heading,
+            debug = debug,
+            options = {{
+                name = id,
+                label = label,
+                icon = icon,
+                iconColor = config.target.iconColor,
+                distance = distance,
+                onSelect = onSelect,
+            }},
+        })
+        return
+    end
+
+    exports['qb-target']:AddBoxZone(id, coords, 3.0, 3.0, {
+        name = id,
+        heading = heading,
+        debugPoly = debug,
+        minZ = coords.z - 1.0,
+        maxZ = coords.z + 1.0,
+    }, {
+        options = {{
+            label = label,
+            icon = icon,
+            action = onSelect,
+        }},
+        distance = distance,
+    })
 end
 
 CreateThread(function()
     for elevatorName, elevatorFloors in pairs(config.elevators) do
         for floorIndex, floor in pairs(elevatorFloors) do
-            local id = ('%s_%s'):format(elevatorName, floorIndex)
             local info = {elevator = elevatorName, floortitle = floorIndex}
 
-            if config.settings.target then
-                handleTarget(id, floor, info)
+            if config.interaction ~= 'text' then
+                handleTarget(('%s_%s'):format(elevatorName, floorIndex), floor, info)
             else
-                CreateThread(function()
-                    while true do
-                        local sleep = 1000
-                        local ped = PlayerPedId()
-                        local playerCoords = GetEntityCoords(ped)
-                        local distance = #(playerCoords - floor.coords)
+                local point = lib.points.new({
+                    coords = floor.coords.xyz,
+                    distance = config.text.distance,
+                })
+                local textCoords = floor.coords.xyz + vec3(0.0, 0.0, 1.0)
 
-                        if distance < config.settings.textDistance then
-                            sleep = 0
+                function point:nearby()
+                    if menuOpen then return end
 
-                            Draw3DText(floor.coords.x, floor.coords.y, floor.coords.z + 1.0, locale('textElevator'))
+                    Draw3DText(textCoords, locale('textElevator'))
 
-                            if IsControlJustPressed(0, 38) then
-                                TriggerEvent('s4t4n667_elevators:showOptions', info)
-                            end
-                        end
-
-                        Wait(sleep)
+                    if IsControlJustPressed(0, 38) then
+                        TriggerEvent('s4t4n667_elevators:showOptions', info)
                     end
-                end)
+                end
             end
         end
     end
@@ -97,11 +88,13 @@ RegisterNetEvent("s4t4n667_elevators:showOptions", function(data)
 	if config.elevators and config.elevators[data.elevator] then
 		for index, floor in pairs(config.elevators[data.elevator]) do
 			table.insert(elevator, {
-				title = floor.floorTitle,
-				description = floor.label,
+				title = floor.title,
+				description = floor.description,
                 icon = floor.icon,
+                iconColor = floor.iconColor,
 				disabled = isDisabled(index, floor, data),
 				onSelect = function()
+					menuOpen = false
 					TriggerEvent("s4t4n667_elevator:UseElevator", floor)
 				end
 			})
@@ -111,8 +104,12 @@ RegisterNetEvent("s4t4n667_elevators:showOptions", function(data)
 			options = elevator,
 			title = data.elevator,
 			position = 'top-right',
-		}) 
+			onExit = function()
+				menuOpen = false
+			end,
+		})
 		lib.showContext('mainMenu')
+		menuOpen = true
 	end
 end)
 
@@ -120,7 +117,7 @@ RegisterNetEvent("s4t4n667_elevator:UseElevator", function(arg)
     local floor = arg
     local ped = PlayerPedId()
 
-    ExecuteCommand(config.settings.animation)
+    ExecuteCommand(config.travel.animation)
     Wait(2000)
     ExecuteCommand('e c')
     DoScreenFadeOut(100)
@@ -130,32 +127,32 @@ RegisterNetEvent("s4t4n667_elevator:UseElevator", function(arg)
     Wait(100)
 	
     lib.progressBar({
-		duration = config.settings.travelTime,
+		duration = config.travel.time,
 		label = locale('Travelling'),
 		useWhileDead = false,
 		canCancel = false,
 	})
     
     DoScreenFadeIn(1500)
-    TriggerServerEvent("InteractSound_SV:PlayWithinDistance", config.elevatorSound.distance, config.elevatorSound.sound, config.elevatorSound.volume)
-    
-    lib.notify({title = locale('notify'), description = locale('notify_desc') .. floor.floorTitle, type = "success"})
+    TriggerServerEvent("InteractSound_SV:PlayWithinDistance", config.sound.distance, config.sound.name, config.sound.volume)
+
+    lib.notify({title = locale('notify'), description = locale('notify_desc') .. floor.title, type = "success"})
 end)
 
 local function getPlayerData()
-    if config.settings.useQBCore then
+    if config.useQBCore then
         return QBCore.Functions.GetPlayerData(), true
     end
     
     return ESX.GetPlayerData(), false
 end
 
-local function hasRequiredJob(playerData, joblock, isQB)
-    if not joblock or not next(joblock) then
+local function hasRequiredJob(playerData, jobs, isQB)
+    if not jobs or not next(jobs) then
         return true
     end
 
-    for jobName, gradeLevel in pairs(joblock) do
+    for jobName, gradeLevel in pairs(jobs) do
         local job = playerData.job
 
         if job.name == jobName then
@@ -174,12 +171,12 @@ local function hasRequiredJob(playerData, joblock, isQB)
     return false
 end
 
-local function hasRequiredItem(itemlock)
-    if not itemlock or not next(itemlock) then
+local function hasRequiredItem(items)
+    if not items or not next(items) then
         return true
     end
 
-    for _, itemName in ipairs(itemlock) do
+    for _, itemName in ipairs(items) do
         if exports.ox_inventory:Search("count", itemName) > 0 then
             return true
         end
@@ -195,21 +192,20 @@ function isDisabled(index, floor, data)
 
     local playerData, isQB = getPlayerData()
 
-    local hasJob = hasRequiredJob(playerData, floor.joblock, isQB)
-    local hasItem = hasRequiredItem(floor.itemlock)
+    local hasJob = hasRequiredJob(playerData, floor.jobs, isQB)
+    local hasItem = hasRequiredItem(floor.items)
 
     return not (hasJob and hasItem)
 end
 
-function Draw3DText(x, y, z, text)
-    SetDrawOrigin(x, y, z, 0)
+function Draw3DText(coords, text)
+    SetDrawOrigin(coords.x, coords.y, coords.z, 0)
     SetTextFont(4)
-    SetTextProportional(1)
-    SetTextScale(config.settings.textSize, config.settings.textSize)
+    SetTextScale(config.text.scale, config.text.scale)
     SetTextColour(255, 255, 255, 215)
-    SetTextEntry("STRING")
-    SetTextCentre(1)
-    AddTextComponentString(text)
-    DrawText(0.0, 0.0)
+    SetTextCentre(true)
+    BeginTextCommandDisplayText('STRING')
+    AddTextComponentSubstringPlayerName(text)
+    EndTextCommandDisplayText(0.0, 0.0)
     ClearDrawOrigin()
 end

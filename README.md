@@ -2,7 +2,7 @@
 Fully customisable elevator system using ox_lib menus - allowing for many different locations and floors. Elevators can also be locked to job roles or to an item if desired.
 
 ## 🔐 Dependencies
-- any framework
+- ESX / QBCORE / QBOX
 - [ox_lib](https://github.com/overextended/ox_lib)
 - [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-fivem/qb-target)
 - [ox_inventory](https://github.com/overextended/ox_inventory)
@@ -18,31 +18,26 @@ Fully customisable elevator system using ox_lib menus - allowing for many differ
 - [Preview video](https://youtu.be/96q8vfx50SA?si=Mc0Ix0J2iIUAZBqE)
 - [Documentation](https://s4t4n667.gitbook.io/asgaard-developments/free-scripts/s4t4n667_elevators)
 
+## 📊 Resmon Count
+- Target - 0.00ms when idle & in use
+- 3DText - 0.00ms when idle, 0.02-0.03 when in use
+
 ## 📝 Example of an elevator locked to an item:
 ```lua
 		['Mount Zonah Hospital'] = {
 			{
-				floorTitle = 'Main Floor', 
-				label = 'Access the main Hospital floor',
-				icon = 'fa-hospital',
-				iconColor = '',
+				title = 'Main Floor',
+				description = 'Access the main hospital floor.',
+				icon = 'fa-solid fa-hospital',
 				coords = vec4(-436.0963, -359.8023, 34.9475, 356.0672),
-				joblock = nil,
-				itemlock = {
-					"water",
-				},
+				items = { 'water' }, -- needs any one of these
 			},
 			{
-				floorTitle = 'Car Park', 
-				label = 'Access the Hospital car park.',
+				title = 'Car Park',
+				description = 'Access the hospital car park.',
 				icon = 'fa-solid fa-car',
-				iconColor = '',
-				coords = vec4(-418.9, -344.81, 24.23, 106.67), 
-				joblock = nil,
-				itemlock = {
-					"water",
-					"burger"
-				},
+				coords = vec4(-418.9, -344.81, 24.23, 106.67),
+				items = { 'water', 'burger' },
 			},
 		},
 ```
@@ -50,26 +45,18 @@ Fully customisable elevator system using ox_lib menus - allowing for many differ
 ```lua
 		['Mount Zonah Hospital'] = {
 			{
-				floorTitle = 'Main Floor', 
-				label = 'Access the main Hospital floor',
-				icon = 'fa-hospital',
-				iconColor = '',
+				title = 'Main Floor',
+				description = 'Access the main hospital floor.',
+				icon = 'fa-solid fa-hospital',
 				coords = vec4(-436.0963, -359.8023, 34.9475, 356.0672),
-				joblock = { 
-					["ambulance"] = 0,
-				},
-				itemlock = nil,
+				jobs = { ambulance = 0 }, -- job = minimum grade
 			},
 			{
-				floorTitle = 'Car Park', 
-				label = 'Access the Hospital car park.',
+				title = 'Car Park',
+				description = 'Access the hospital car park.',
 				icon = 'fa-solid fa-car',
-				iconColor = '',
-				coords = vec4(-418.9, -344.81, 24.23, 106.67), 
-				joblock = { 
-					["ambulance"] = 0,
-				},
-				itemlock = nil,
+				coords = vec4(-418.9, -344.81, 24.23, 106.67),
+				jobs = { ambulance = 0 },
 			},
 		},
 ```

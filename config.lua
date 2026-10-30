@@ -1,70 +1,60 @@
 return {
+	useQBCore = true,
 
-	settings = {
-		useQBCore = true,
+	interaction = 'text', -- 'text', 'ox_target' or 'qb-target'
 
-		target = true, -- true uses ox_target, falses uses 3dtext
-		targetType = 'ox_target', -- ox_target or qb-target
-		targetDistance = 2.0, 
-		targetIcon = 'fa-solid fa-bell',
-		targetIconColor = '',
-
-		textDistance = 5.0,
-		textSize = 0.35,
-
-		animation = 'e atm', -- animation after selecting floor
-		travelTime = 2000, -- 1000 is 1 second
+	target = {
+		distance = 2.0,
+		icon = 'fa-solid fa-bell',
+		iconColor = '',
+		debug = false, -- show zone outlines
 	},
 
-	elevatorSound = {
-		sound = 'doorbell', -- interact-sound/client/html/sounds
-		distance = 5,
+	text = {
+		distance = 5.0,
+		scale = 0.35,
+	},
+
+	travel = {
+		animation = 'e atm', -- emote played after picking a floor
+		time = 2000, -- milliseconds
+	},
+
+	sound = {
+		name = 'doorbell', -- file in interact-sound/client/html/sounds
+		distance = 5.0,
 		volume = 0.2,
 	},
 
 	elevators = {
 		['Mission Row Police Station'] = {
 			{
-				floorTitle = 'Ground Floor', 
-				label = 'Access the ground floor.',				
-				coords = vector3(463.72, -985.37, 34.3), 
-				heading = 87.83,
-				joblock = { 
-					["police"] = 0,
-				},
-				itemlock = nil,
+				title = 'Ground Floor',
+				description = 'Access the ground floor.',
+				coords = vec4(463.72, -985.37, 34.3, 87.83),
+				jobs = { police = 0 }, -- job = minimum grade
 			},
 			{
-				floorTitle = 'Level 1', 
-				label = 'Access the Helicopter pad.',				
-				coords = vector3(468.49, -983.95, 43.69), 
-				heading = 91.48,
-				joblock = { 
-					["police"] = 0,
-				},
-				itemlock = nil,
+				title = 'Level 1',
+				description = 'Access the helicopter pad.',
+				coords = vec4(468.49, -983.95, 43.69, 91.48),
+				jobs = { police = 0 },
 			},
 		},
+
 		['Mount Zonah Hospital'] = {
 			{
-				floorTitle = 'Main Floor', 
-				label = 'Access the main Hospital floor',
-				icon = 'fa-hospital',
-				iconColor = '',
-				coords = vec4(-436.0963, -359.8023, 34.9475, 356.0672),
-				joblock = nil,
-				itemlock = nil,
+				title = 'Main Floor',
+				description = 'Access the main hospital floor.',
+				icon = 'fa-solid fa-hospital',
+				coords = vec4(-444.6125, -362.1514, 33.4912, 185.9959),
 			},
 			{
-				floorTitle = 'Car Park', 
-				label = 'Access the Hospital car park.',
+				title = 'Car Park',
+				description = 'Access the hospital car park.',
 				icon = 'fa-solid fa-car',
-				iconColor = '',
-				coords = vec4(-418.9, -344.81, 24.23, 106.67), 
-				joblock = nil,
-				itemlock = {
-					"water",
-				},
+				coords = vec4(-418.9, -344.81, 24.23, 106.67),
+				items = { 'water' }, -- needs any one of these
 			},
 		},
 	},
