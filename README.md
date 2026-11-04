@@ -2,7 +2,7 @@
 Fully customisable elevator system using ox_lib menus - allowing for many different locations and floors. Elevators can also be locked to job roles or to an item if desired.
 
 ## 🔐 Dependencies
-- ESX / QBCORE / QBOX
+- [ESX](https://github.com/esx-framework/esx_core), [QBCore](https://github.com/qbcore-framework) or [Qbox](https://github.com/Qbox-project/)
 - [ox_lib](https://github.com/overextended/ox_lib)
 - [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-fivem/qb-target)
 - [ox_inventory](https://github.com/overextended/ox_inventory)
