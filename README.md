@@ -1,5 +1,16 @@
+<div align="center">
+
 # s4t4n667_elevators
-Fully customisable elevator system using ox_lib menus - allowing for many different locations and floors. Elevators can also be locked to job roles or to an item if desired.
+
+A fully configurable elevator system. Create multiple elevators with as many floors as you need and set a name, description, icon, and destination for each floor. Players can access elevators through a target or 3D text, with optional job and minimum-grade checks, inventory item requirements, or both. The script handles the floor menu and travel sequence including an optional animation, screen fade, progress bar, sound effect and arrival notification.
+
+[**Preview video**](https://youtu.be/96q8vfx50SA) | [**Documentation**](https://s4t4n667.gitbook.io/asgaard-developments/free-scripts/s4t4n667_elevators) | [**Store**](https://s4t4n667.gitbook.io/asgaard-developments/free-scripts/s4t4n667_moneywash)
+
+<a href="https://5metrics.dev/resource/s4t4n667_elevators">
+  <img src="https://badges.5metrics.dev/s4t4n667_elevators/servers.svg?style=for-the-badge" alt="Servers">
+</a>
+
+</div>
 
 ## 🔐 Dependencies
 - [ESX](https://github.com/esx-framework/esx_core), [QBCore](https://github.com/qbcore-framework) or [Qbox](https://github.com/Qbox-project/)
@@ -13,10 +24,6 @@ Fully customisable elevator system using ox_lib menus - allowing for many differ
 2) Add `s4t4n667_elevators` to your server's `resource` folder
 3) Adjust the `config.lua` to your liking
 4) Restart your server
-
-## 🔗 Useful links
-- [Preview video](https://youtu.be/96q8vfx50SA?si=Mc0Ix0J2iIUAZBqE)
-- [Documentation](https://s4t4n667.gitbook.io/asgaard-developments/free-scripts/s4t4n667_elevators)
 
 ## 📊 Resmon Count
 - Target - 0.00ms when idle & in use
