@@ -4,7 +4,7 @@
 
 A fully configurable elevator system. Create multiple elevators with as many floors as you need and set a name, description, icon, and destination for each floor. Players can access elevators through a target or 3D text, with optional job and minimum-grade checks, inventory item requirements, or both. The script handles the floor menu and travel sequence including an optional animation, screen fade, progress bar, sound effect and arrival notification.
 
-[**Preview video**](https://youtu.be/96q8vfx50SA) | [**Documentation**](https://s4t4n667.gitbook.io/asgaard-developments/free-scripts/s4t4n667_elevators) | [**Store**](https://s4t4n667.gitbook.io/asgaard-developments/free-scripts/s4t4n667_moneywash)
+[**Preview video**](https://youtu.be/96q8vfx50SA) | [**Documentation**](https://s4t4n667.gitbook.io/asgaard-developments/free-scripts/s4t4n667_elevators) | [**Store**](https://asgaard-developments.tebex.io/)
 
 <a href="https://5metrics.dev/resource/s4t4n667_elevators">
   <img src="https://badges.5metrics.dev/s4t4n667_elevators/servers.svg?style=for-the-badge" alt="Servers">
